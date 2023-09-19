@@ -1,4 +1,24 @@
-// The Swift Programming Language
-// https://docs.swift.org/swift-book
+//
+//  main.swift
+//
+//
+//  Created by Simon Weniger (Aiden Technologies UG) on 19.09.23.
+//
 
-print("Hello, world!")
+import OpenAPIRuntime
+import OpenAPIURLSession
+
+// Instantiate your chosen transport library.
+let transport: ClientTransport = URLSessionTransport()
+
+let client = Client(
+	serverURL: try Servers.server(),
+	transport: transport
+)
+
+let response = try await client.getGreeting(
+	.init(
+		query: .init(name: "CLI")
+	)
+)
+print(response)
