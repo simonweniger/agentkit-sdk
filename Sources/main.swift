@@ -81,218 +81,14 @@ public struct SuperagentSDK {
 		return response
 	}
 	
-	//Prompts
-	///Retuns a specific prompt
-	public func getPrompt(id: String) async throws -> [String: Any] {
-		let data = try await request(method: .get, endpoint: "/prompts/\(id)")
-		guard let responseData = data as? [String: Any],
-			  let promptData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-		
-		Swift.print("getPrompt result: \(promptData)")
-		
-		//let decoder = JSONDecoder()
-		//let jsonDataEncoded = try JSONSerialization.data(withJSONObject: jsonData, options: [])
-		//let prompt = try decoder.decode(Prompt.self, from: jsonDataEncoded)
-		
-		return promptData
-	}
+	//MARK: - START VERSION 1.0
 	
-	///Delete prompt
-	public func deletePrompt(id: String) async throws -> [String: Any] {
-		let data = try await request(method: .delete, endpoint: "/prompts/\(id)")
-		guard let responseData = data as? [String: Any],
-			  let success = responseData["success"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-		
-		Swift.print("deletePrompt result: \(success)")
-		
-		return success
-	}
 	
-	///Lists all prompts
-	public func listPrompts() async throws -> [[String: Any]] {
-		let data = try await request(method: .get, endpoint: "/prompts")
-		
-		guard let responseData = data as? [String: Any],
-			  let promptsData = responseData["data"] as? [[String: Any]] else {
-			throw SuperagentError.failedToRetrieve
-		}
-		
-		Swift.print("listPrompts result: \(promptsData)")
-		
-		//let decoder = JSONDecoder()
-		//var prompts = [Prompt]()
-		
-		//for json in jsonArray {
-		//	let jsonData = try JSONSerialization.data(withJSONObject: json, options: [])
-		//	let prompt = try decoder.decode(Prompt.self, from: jsonData)
-		//	prompts.append(prompt)
-		//}
-		
-		return promptsData
-	}
 	
-	///Patch a specific prompt
-	public func updatePrompt(promptId: String, newPrompt: Prompt) async throws -> [String: Any] {
-		let payload: [String: Any] = ["name": newPrompt.name, "input_variables": newPrompt.inputVariables, "template": newPrompt.template]
-		let data = try await request(method: .patch, endpoint: "/prompts/\(promptId)", data: payload)
-		
-		guard let responseData = data as? [String: Any],
-			  let promptData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-		
-		Swift.print("updatePrompt result: \(promptData)")
-		
-		return promptData
-	}
+	//MARK: - Agent
 	
-	///Create a new prompt
-	public func createPrompt(prompt: Prompt) async throws -> [String: Any] {
-		let payload: [String: Any] = ["name": prompt.name, "input_variables": prompt.inputVariables, "template": prompt.template]
-		let data = try await request(method: .post, endpoint: "/prompts", data: payload)
-		
-		guard let responseData = data as? [String: Any],
-			  let promptData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-		
-		Swift.print("createPrompt result: \(promptData)")
-		
-		return promptData
-	}
-	
-	//Documents
-	///Returns a specific document
-	public func getDocument(id: String) async throws -> [String: Any] {
-		let data = try await request(method: .get, endpoint: "/documents/\(id)")
-		
-		guard let responseData = data as? [String: Any],
-			  let documentData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-		
-		Swift.print("getDocument result: \(documentData)")
-		
-		return documentData
-	}
-	
-	///Delete document
-	public func deleteDocument(id: String) async throws -> [String: Any] {
-		let data = try await request(method: .delete, endpoint: "/documents/\(id)")
-		
-		guard let responseData = data as? [String: Any],
-			  let documentData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-		
-		Swift.print("deleteDocument result: \(documentData)")
-		
-		return documentData
-	}
-	
-	///Lists all documents
-	public func listDocuments() async throws -> [String: Any] {
-		let data = try await request(method: .get, endpoint: "/documents")
-		
-		guard let responseData = data as? [String: Any],
-			  let documentData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-		
-		Swift.print("listDocuments result: \(documentData)")
-		
-		return documentData
-	}
-	
-	///Create a new document
-	public func createDocument(document: Document) async throws -> [String: Any] {
-		let payload: [String: Any] = ["name": document.name,
-									  "description" : document.description as Any,
-									  "content" : document.content,
-									  "splitter": ["type": document.splitter?.type as Any, "chunk_size": document.splitter?.chunkSize as Any, "chunk_overlap": document.splitter?.chunkOverlap as Any],
-									  "url": document.url as Any,
-									  "type": document.type,
-									  "authorization": document.authorization as Any]
-		let data = try await request(method: .post, endpoint: "/documents", data: payload)
-		
-		guard let responseData = data as? [String: Any],
-			  let documentData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-		
-#if DEBUG
-		Swift.print("createDocument result: \(documentData)")
-#endif
-		
-		return documentData
-	}
-	
-	///Patch a document
-	public func updateDocument(id: String, document: Document) async throws -> [String: Any] {
-		let payload: [String: Any] = ["name": document.name,
-									  "description" : document.description as Any,
-									  "content" : document.content,
-									  "splitter": ["type": document.splitter?.type as Any, "chunk_size": document.splitter?.chunkSize as Any, "chunk_overlap": document.splitter?.chunkOverlap as Any],
-									  "url": document.url as Any,
-									  "type": document.type,
-									  "authorization": document.authorization as Any]
-		let data = try await request(method: .patch, endpoint: "/documents/\(id)", data: payload)
-		
-		guard let responseData = data as? [String: Any],
-			  let documentData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-			
-		}
-		
-#if DEBUG
-		Swift.print("updateDocument result: \(documentData)")
-#endif
-		
-		return documentData
-	}
-	
-	//Agents
-	///Returns a specific agent
-	public func getAgent(id: String) async throws -> [String: Any] {
-		let data = try await request(method: .get, endpoint: "/agents/\(id)")
-		
-		guard let responseData = data as? [String: Any],
-			  let agentData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-		
-#if DEBUG
-		Swift.print("getAgent result: \(agentData)")
-#endif
-		
-		//let decoder = JSONDecoder()
-		//let jsonDataEncoded = try JSONSerialization.data(withJSONObject: jsonData, options: [])
-		//let agent = try decoder.decode(Agent.self, from: jsonDataEncoded)
-		
-		return agentData
-	}
-	
-	///Delete agent
-	public func deleteAgent(id: String) async throws -> [String: Any] {
-		let data = try await request(method: .delete, endpoint: "/agents/\(id)")
-		
-		guard let responseData = data as? [String: Any],
-			  let agentData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-		
-#if DEBUG
-		Swift.print("deleteAgent result: \(agentData)")
-#endif
-		
-		return agentData
-	}
-	
-	///Lists all agents
+	//List
+	///List all agents
 	public func listAgents() async throws -> [String: Any] {
 		let data = try await request(method: .get, endpoint: "/agents")
 		
@@ -308,323 +104,267 @@ public struct SuperagentSDK {
 		return agentData
 	}
 	
+	//Create
 	///Create a new agent
 	public func createAgent(agent: Agent) async throws -> [String: Any] {
-		let payload: [String: Any] = ["name": agent.name,
-									  "llm": ["provider": agent.llm?.provider, "model": agent.llm?.model, "api_key": agent.llm?.apiKey],
-									  "type": agent.type,
-									  "hasMemory": agent.hasMemory as Any,
-									  "promptId": agent.promptId ?? ""]
+		let payload: [String: Any] = ["isActive": agent.isActive,
+									  "name": agent.name,
+									  "prompt": agent.prompt ?? "",
+									  "llmModel": agent.llmModel,
+									  "description": agent.description,
+									  "avatar": agent.avatar ?? ""]
 		let data = try await request(method: .post, endpoint: "/agents", data: payload)
+		
+		guard let responseData = data as? [String: Any],
+			  let agentData = responseData["data"] as? [String: Any] else {
+			throw SuperagentError.requestFailed
+		}
+#if DEBUG
+		Swift.print("createAgent result: \(agentData)")
+#endif
+		
+		return agentData
+	}
+	
+	//Get
+	///Get a single agent
+	public func getAgent(id: String) async throws -> [String: Any] {
+		let data = try await request(method: .get, endpoint: "/agents/\(id)")
 		
 		guard let responseData = data as? [String: Any],
 			  let agentData = responseData["data"] as? [String: Any] else {
 			throw SuperagentError.failedToRetrieve
 		}
+		
 #if DEBUG
-		Swift.print("createAgent result: \(agentData)")
+		Swift.print("getAgent result: \(agentData)")
 #endif
-		// WE MAY ADD RESPONSE MODELS LATER AND ADD JSON DECODING
-		
-		//print("response data:\(jsonData)")
-		
-		//let decoder = JSONDecoder()
-		//let jsonDataEncoded = try JSONSerialization.data(withJSONObject: jsonData, options: [])
-		
-		//print("JsonDataEncoded \(jsonDataEncoded)")
-		//let agent = try decoder.decode(Agent.self, from: jsonDataEncoded)
-		
-		//print("returned Agent: \(agent)")
 		
 		return agentData
 	}
 	
-	
-	///Create a new prediction
-	public func createPrediction(agentId: String, prediction: PredictAgent) async throws -> String {
-		//print("create Prediction called")
-		let payload: [String: Any] = ["input": prediction.input,
-									  "has_Streaming": prediction.hasStreaming as Any,
-									  "session": prediction.session as Any]
-
+	//Update
+	///Patch an agent
+	public func updateAgent(agentId: String, newAgent: Agent) async throws -> [String: Any] {
+		let payload: [String: Any] = ["isActive": newAgent.isActive,
+									  "name": newAgent.name,
+									  "prompt": newAgent.prompt ?? "",
+									  "llmModel": newAgent.llmModel,
+									  "description": newAgent.description,
+									  "avatar": newAgent.avatar ?? ""]
+		let data = try await request(method: .post, endpoint: "/agents/\(agentId)", data: payload)
+		
+		guard let responseData = data as? [String: Any],
+			  let agentData = responseData["data"] as? [String: Any] else {
+			throw SuperagentError.failedToUpdate
+		}
 #if DEBUG
-		Swift.print("Prediction payload: \(payload)")
+		Swift.print("createAgent result: \(agentData)")
 #endif
-		let data = try await request(method: .post, endpoint: "/agents/\(agentId)/predict", data: payload)
+		
+		return agentData
+	}
+	
+	///Delete agent
+	public func deleteAgent(id: String) async throws -> [String: Any] {
+		let data = try await request(method: .delete, endpoint: "/agents/\(id)")
+		
+		guard let responseData = data as? [String: Any],
+			  let agentData = responseData["data"] as? [String: Any] else {
+			throw SuperagentError.requestFailed
+		}
+		
+#if DEBUG
+		Swift.print("deleteAgent result: \(agentData)")
+#endif
+		
+		return agentData
+	}
+	
+	//Invoke
+	///Invoke an agent
+	public func invokeAgent(agentId: String, agentRequest: Request) async throws -> String {
+		let payload: [String: Any] = ["input": agentRequest.input,
+									  "sessionId": agentRequest.sessionId as Any,
+									  "enableStreaming": agentRequest.enableStreaming as Any]
+		
+		let data = try await request(method: .post, endpoint: "/agents/\(agentId)/invoke", data: payload)
+		
 #if DEBUG
 		Swift.print("Prediction data:\(data)")
 #endif
+		
 		guard let responseData = data as? [String: Any],
 			  let predictionData = responseData["data"] as? String else {
 			throw SuperagentError.failedToRetrieve
 		}
+		
+#if DEBUG
 		Swift.print("createPrediction result: \(predictionData)")
+#endif
+		
 		return predictionData
 	}
 	
-	//Agent Library
-	///Get all Agents from the Library
-	public func listLibraryAgents() async throws -> [[String: Any]] {
-		let data = try await request(method: .get, endpoint: "/agents/library")
+	//Add LLM
+	///Add LLM to agent
+	public func addLlmToAgent(agentId: String, llmId: String) async throws -> String {
+		let data = try await request(method: .post, endpoint: "/agents/\(agentId)/llms", data: ["llmId": llmId])
 		
 		guard let responseData = data as? [String: Any],
-			  let agentLibrary = responseData["data"] as? [[String: Any]] else {
+			  let agentData = responseData["data"] as? String else {
+			throw SuperagentError.failedToRetrieve
+		}
+		
+#if DEBUG
+		Swift.print("add LLM To Agent result: \(agentData)")
+#endif
+		
+		return agentData
+	}
+	
+	//Remove LLM
+	///Remove LLM from agent
+	public func removeLlmfromAgent(agentId: String, llmId: String) async throws -> String {
+		let data = try await request(method: .delete, endpoint: "/agents/\(agentId)/llms/\(llmId)")
+		
+		guard let responseData = data as? [String: Any],
+			  let agentData = responseData["data"] as? String else {
+			throw SuperagentError.failedToRetrieve
+		}
+		
+#if DEBUG
+		Swift.print("remove LLM from Agent result: \(agentData)")
+#endif
+		
+		return agentData
+	}
+	
+	//List Tools
+	///List agent tools
+	public func listAgentTools(agentId: String) async throws -> [String: Any] {
+		let data = try await request(method: .get, endpoint: "/agents/\(agentId)/tools")
+		
+		guard let responseData = data as? [String: Any],
+			  let agentTools = responseData["data"] as? [String: Any] else {
 			throw SuperagentError.failedToRetrieve
 		}
 #if DEBUG
-		Swift.print("getAgentDocuments result: \(agentLibrary)")
-#endif
-		return agentLibrary
-	}
-	
-	
-	//Agent Documents
-	///Get all Documents from an Agent
-	public func listAgentDocuments() async throws -> [[String: Any]] {
-		let data = try await request(method: .get, endpoint: "/agent-documents")
-		
-		guard let responseData = data as? [String: Any],
-			  let agentDocuments = responseData["data"] as? [[String: Any]] else {
-			throw SuperagentError.failedToRetrieve
-		}
-#if DEBUG
-		Swift.print("getAgentDocuments result: \(agentDocuments)")
-#endif
-		return agentDocuments
-	}
-	
-	///Get all Documents from an Agent
-	public func getAgentDocument(agentDocumentId: String) async throws -> [String: Any] {
-		let data = try await request(method: .get, endpoint: "/agent-documents\(agentDocumentId)")
-		
-		guard let responseData = data as? [String: Any],
-			  let agentDocument = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-#if DEBUG
-		Swift.print("getAgentDocuments result: \(agentDocument)")
-#endif
-		return agentDocument
-	}
-	
-	///Add a Document to an Agent
-	public func addDocumentToAgent(documentId: String, agentId: String) async throws -> [String: Any] {
-		let payload: [String: Any] = ["documentId": documentId, "agentId": agentId]
-		let data = try await request(method: .post, endpoint: "/agents", data: payload)
-		
-		guard let responseData = data as? [String: Any],
-			  let agentDocument = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToCreate
-		}
-#if DEBUG
-		Swift.print("createAgentDocument result: \(agentDocument)")
-#endif
-		return agentDocument
-	}
-	
-	///Delete a Document from an Agent
-	public func deleteAgentDocument(agentDocumentId: String) async throws -> [String: Any] {
-		let data = try await request(method: .delete, endpoint: "/agent-documents/\(agentDocumentId)")
-		
-		guard let responseData = data as? [String: Any],
-			  let agentDocument = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-#if DEBUG
-		Swift.print("deleteAgentDocument result: \(agentDocument)")
-#endif
-		return agentDocument
-	}
-	
-	//Agent Tools
-	///Get all Tools from an Agent
-	public func listAgentTools(agentToolId: String) async throws -> [String: Any] {
-		let data = try await request(method: .get, endpoint: "/agent-tools/\(agentToolId)")
-		
-		guard let responseData = data as? [String: Any],
-			  let agentTool = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-#if DEBUG
-		Swift.print("getAgentTools result: \(agentTool)")
-#endif
-		return agentTool
-	}
-	
-	///Get all Tools from an Agent
-	public func getAgentTool() async throws -> [[String: Any]] {
-		let data = try await request(method: .get, endpoint: "/agent-tools")
-		
-		guard let responseData = data as? [String: Any],
-			  let agentTools = responseData["data"] as? [[String: Any]] else {
-			throw SuperagentError.failedToRetrieve
-		}
-#if DEBUG
-		Swift.print("getAgentTools result: \(agentTools)")
+		Swift.print("list agent tools result: \(agentTools)")
 #endif
 		return agentTools
 	}
 	
-	///Add a Tool to an Agent
+	
+	//Add Tool
+	///Add tool to agent
 	public func addToolToAgent(agentId: String, toolId: String) async throws -> [String: Any] {
-		let payload: [String: Any] = ["agentId": agentId, "toolId": toolId]
-		let data = try await request(method: .post, endpoint: "/agent-tools", data: payload)
+		let data = try await request(method: .post, endpoint: "/agents/\(agentId)/tools", data: ["toolId": toolId])
 		
 		guard let responseData = data as? [String: Any],
-			  let agentToolData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToUpdate
+			  let agentTools = responseData["data"] as? [String: Any] else {
+			throw SuperagentError.failedToRetrieve
 		}
 #if DEBUG
-		Swift.print("addToolToAgent result: \(agentToolData)")
+		Swift.print("add tool to agent result: \(agentTools)")
 #endif
-		return agentToolData
+		return agentTools
 	}
 	
-	///Delete a Tool from an Agent
-	public func deleteAgentTool(agentToolId: String) async throws -> [String: Any] {
-		let data = try await request(method: .delete, endpoint: "/agent-documents/\(agentToolId)")
+	//Remove Tool
+	///Remove tool from agent
+	public func removeToolFromAgent(agentId: String, toolId: String) async throws -> [String: Any] {
+		let data = try await request(method: .delete, endpoint: "/agents/\(agentId)/tools/\(toolId)")
 		
 		guard let responseData = data as? [String: Any],
 			  let success = responseData["data"] as? [String: Any] else {
 			throw SuperagentError.requestFailed
 		}
 #if DEBUG
-		Swift.print("deleteAgentTool result: \(success)")
+		Swift.print("remove tool from agent result: \(success)")
 #endif
 		return success
 	}
 	
-	//Tools
-	///Returns a specific tool
-	public func getTool(id: String) async throws -> [String: Any] {
-		let data = try await request(method: .get, endpoint: "/tools/\(id)")
+	//List Datasources
+	///List agent datasources
+	public func listAgentDatasources(agentId: String) async throws -> [String: Any] {
+		let data = try await request(method: .get, endpoint: "/agents/\(agentId)/datasources")
 		
 		guard let responseData = data as? [String: Any],
-			  let toolData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-#if DEBUG
-		Swift.print("getTool result: \(toolData)")
-#endif
-		return toolData
-	}
-	
-	///Delete tool
-	public func deleteTool(id: String) async throws -> [String: Any] {
-		let data = try await request(method: .delete, endpoint: "/tools/\(id)")
-		
-		guard let responseData = data as? [String: Any],
-			  let toolData = responseData["data"] as? [String: Any] else {
+			  let agentDatasources = responseData["data"] as? [String: Any] else {
 			throw SuperagentError.requestFailed
 		}
 #if DEBUG
-		Swift.print("deleteTool result: \(toolData)")
+		Swift.print("deleteAgentTool result: \(agentDatasources)")
 #endif
-		return toolData
+		return agentDatasources
 	}
 	
-	///Lists all tools
-	public func listTools() async throws -> [[String: Any]] {
-		let data = try await request(method: .get, endpoint: "/tools")
+	//Add Datasource
+	///Add datasource to agent
+	public func addDatasourceToAgent(agentId: String, datasourceId: String) async throws -> [String: Any] {
+		let data = try await request(method: .post, endpoint: "/agents/\(agentId)/datasources", data: ["datasourceId": datasourceId])
 		
 		guard let responseData = data as? [String: Any],
-			  let toolData = responseData["data"] as? [[String: Any]] else {
+			  let agentDatasources = responseData["data"] as? [String: Any] else {
 			throw SuperagentError.failedToRetrieve
 		}
 #if DEBUG
-		Swift.print("listTools result: \(toolData)")
+		Swift.print("add datasource to agent result: \(agentDatasources)")
 #endif
-		return toolData
+		return agentDatasources
 	}
 	
-	///Create a new tool
-	public func createTool(tool: Tool) async throws -> [String: Any] {
-		var payload: [String: Any] = ["name": tool.name, "type": tool.type]
-		if let metadata = tool.metadata {
-			payload["metadata"] = metadata
-		}
-		let data = try await request(method: .post, endpoint: "/tools", data: payload)
+	//Remove Datasource
+	///Remove datasource from agent
+	public func removeDatasourceFromAgent(agentId: String, datasourceId: String) async throws -> [String: Any] {
+		let data = try await request(method: .delete, endpoint: "/agents/\(agentId)/datasources/\(datasourceId)")
 		
 		guard let responseData = data as? [String: Any],
-			  let toolData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToCreate
-		}
-#if DEBUG
-		Swift.print("createTool result: \(toolData)")
-#endif
-		return toolData
-	}
-	
-	//Tags
-	///Returns a specific tag
-	public func getTag(id: String) async throws -> [String: Any] {
-		let data = try await request(method: .get, endpoint: "/tags/\(id)")
-		
-		guard let responseData = data as? [String: Any],
-			  let tagData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToRetrieve
-		}
-#if DEBUG
-		Swift.print("getTag result: \(tagData)")
-#endif
-		return tagData
-	}
-
-	///Delete tool
-	public func deleteTag(id: String) async throws -> [String: Any] {
-		let data = try await request(method: .delete, endpoint: "/tags/\(id)")
-		
-		guard let responseData = data as? [String: Any],
-			  let tagData = responseData["data"] as? [String: Any] else {
+			  let success = responseData["data"] as? [String: Any] else {
 			throw SuperagentError.requestFailed
 		}
 #if DEBUG
-		Swift.print("deleteTag result: \(tagData)")
+		Swift.print("remove datasource from agent result: \(success)")
 #endif
-		return tagData
-	}
-
-	///Lists all tools
-	public func listTags() async throws -> [[String: Any]] {
-		let data = try await request(method: .get, endpoint: "/tags")
-		
-		guard let responseData = data as? [String: Any],
-			  let tagsData = responseData["data"] as? [[String: Any]] else {
-			throw SuperagentError.failedToRetrieve
-		}
-#if DEBUG
-		Swift.print("listTagss result: \(tagsData)")
-#endif
-		return tagsData
-	}
-	///Create a new tool
-	public func createTag(tag: Tag) async throws -> [String: Any] {
-		var payload: [String: Any] = ["name": tag.name, "type": tag.color, "userId": tag.userId ?? ""]
-		let data = try await request(method: .post, endpoint: "/tags", data: payload)
-		
-		guard let responseData = data as? [String: Any],
-			  let tagData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToCreate
-		}
-#if DEBUG
-		Swift.print("createTag result: \(tagData)")
-#endif
-		return tagData
+		return success
 	}
 	
-	///Patch a tag
-	public func updateTag(id: String, newTag: Tag) async throws -> [String: Any] {
-		var payload: [String: Any] = ["name": newTag.name, "type": newTag.color]
-		let data = try await request(method: .post, endpoint: "/tags/\(id)", data: payload)
+	//List Runs
+	///List agent runs
+	public func listRuns(agentId: String) async throws -> [String: Any] {
+		let data = try await request(method: .get, endpoint: "/agents/\(agentId)/runs")
 		
 		guard let responseData = data as? [String: Any],
-			  let tagData = responseData["data"] as? [String: Any] else {
-			throw SuperagentError.failedToUpdate
+			  let agentRuns = responseData["data"] as? [String: Any] else {
+			throw SuperagentError.requestFailed
 		}
 #if DEBUG
-		Swift.print("updateTag result: \(tagData)")
+		Swift.print("List agent runs result: \(agentRuns)")
 #endif
-		return tagData
+		return agentRuns
 	}
-}
-
+	
+	//MARK: - LLM
+	
+	//List
+	///List all LLMs
+	public func listLLMs() async throws -> [String: Any] {
+		let data = try await request(method: .get, endpoint: "/llms")
+		
+		guard let responseData = data as? [String: Any],
+			  let llms = responseData["data"] as? [String: Any] else {
+			throw SuperagentError.failedToRetrieve
+		}
+		
+#if DEBUG
+		Swift.print("list all LLMs result: \(llms)")
+#endif
+		
+		return llms
+	}
+	
+	//Create
+	///Create a new LLM
+	
