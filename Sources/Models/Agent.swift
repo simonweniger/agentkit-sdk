@@ -6,8 +6,6 @@
 
 import Foundation
 
-
-
 public struct Agent: Codable {
 
 	public var isActive: Bool
