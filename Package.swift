@@ -15,7 +15,7 @@ let package = Package(
 	],
 	targets: [
 		.target(
-			name: "SuperagentLibrary", // Rename the library target
+			name: "Superagent", // Rename the library target
 			dependencies: []),
 		//.testTarget(
 		//    name: "SuperagentTests",
