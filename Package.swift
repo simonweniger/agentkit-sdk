@@ -9,16 +9,13 @@ let package = Package(
 		.macOS(.v10_15), .iOS(.v13), .tvOS(.v13), .watchOS(.v6),
 	],
 	products: [
+		// Products define the executables and libraries a package produces, making them visible to other packages.
 		.library(
 			name: "Superagent",
 			targets: ["Superagent"]),
 	],
 	targets: [
-		.target(
-			name: "Superagent", // Rename the library target
-			dependencies: []),
-		//.testTarget(
-		//    name: "SuperagentTests",
-		//    dependencies: ["Superagent"]),
-	]
+			.target(
+				name: "Superagent")
+		]
 )

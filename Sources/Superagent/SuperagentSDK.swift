@@ -367,7 +367,7 @@ public struct SuperagentSDK {
 	//Create
 	///Create a new LLM
 	public func createLLM(provider: String, apiKey: String, options: [String: Any]?) async throws -> [String: Any] {
-		var payload: [String: Any] = ["provider": provider, "apiKey": apiKey, "options": options as Any]
+		let payload: [String: Any] = ["provider": provider, "apiKey": apiKey, "options": options as Any]
 		
 		let data = try await request(method: .post, endpoint: "/llms", data: payload)
 		
@@ -500,7 +500,7 @@ public struct SuperagentSDK {
 	//Create
 	///Create a new datasource
 	public func createDatasource(datasource: Datasource) async throws -> [String: Any] {
-		var payload: [String: Any] = ["name": datasource.name,
+		let payload: [String: Any] = ["name": datasource.name,
 									  "description": datasource.description,
 									  "type": datasource.type,
 									  "url": datasource.url,
@@ -604,7 +604,7 @@ public struct SuperagentSDK {
 	//Create
 	///Create a new tool
 	public func createTool(tool: Tool) async throws -> [String: Any] {
-		var payload: [String: Any] = ["name": tool.name,
+		let payload: [String: Any] = ["name": tool.name,
 									  "description": tool.description,
 									  "type": tool.type,
 									  "metadata": tool.metadata as Any,
@@ -644,7 +644,7 @@ public struct SuperagentSDK {
 	//Update
 	///Update a specific tool
 	public func updateTool(toolId: String , newTool: Tool) async throws -> [String: Any] {
-		var payload: [String: Any] = ["name": newTool.name,
+		let payload: [String: Any] = ["name": newTool.name,
 									  "description": newTool.description,
 									  "type": newTool.type,
 									  "metadata": newTool.metadata as Any,
@@ -807,7 +807,7 @@ public struct SuperagentSDK {
 	//Add Step
 	///Create a new workflow step
 	public func addWorkflowStep(workflowId: String ,workflowStep: WorkflowStep) async throws -> [String: Any] {
-		var payload: [String: Any] = ["order": workflowStep.order,
+		let payload: [String: Any] = ["order": workflowStep.order,
 									  "agentId": workflowStep.agentId,
 									  "input": workflowStep.input,
 									  "output": workflowStep.output]
