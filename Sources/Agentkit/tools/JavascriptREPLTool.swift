@@ -1,0 +1,43 @@
+//
+//  File.swift
+//  
+//
+//  Created by Simon Weniger on 2024/8/27.
+//
+
+import Foundation
+
+#if os(macOS) || os(iOS) || os(visionOS)
+import JavaScriptCore
+
+
+public class JavascriptREPLTool: BaseTool {
+    var context: JSContext = JSContext()
+    public override init(callbacks: [BaseCallbackHandler] = []) {
+        super.init(callbacks: callbacks)
+    }
+    public override func name() -> String {
+        "javascript_REPL"
+    }
+    
+    public override func description() -> String {
+        """
+        A javascript shell. Use this to execute javascript commands.
+        Input should be a valid javascript command.
+        If you want to see the output of a value, you should print it out
+        with `console.log(...)`.
+"""
+    }
+    
+    public override func _run(args: String) async throws -> String {
+        let jsResult = context.evaluateScript(args)
+        if jsResult != nil {
+            return (jsResult?.toString())!
+        } else {
+            return "javascript eval error."
+        }
+    }
+    
+    
+}
+#endif
